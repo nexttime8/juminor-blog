@@ -1,28 +1,30 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="whole">
+    <!-- 顶部导航栏 -->
+    <WebHeader />
+    <!-- 主内容区域，包含侧边栏和文章列表 -->
+    <!-- <Article /> -->
+    <router-view></router-view>
   </div>
 </template>
-
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+// import Article from "@/views/Article"
+import WebHeader from "@/components/WebHeader"
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
+    // Article,
+    WebHeader,
+  },
 }
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style lang="css">
+.whole {
+  width: 100%;
+}
+router-view {
+  width: 100%;
+  height: 100%;
 }
 </style>
