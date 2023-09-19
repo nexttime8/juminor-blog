@@ -67,16 +67,16 @@
 </template>
 
 <script>
-import Elevator from "@/views/Article/Elevator"
+import Elevator from "@/views/Article/Elevator";
 export default {
   name: "AriticleComp",
   components: {
     Elevator,
   },
-}
+};
 </script>
 
-<style scoped lang="css">
+<style scoped lang="scss">
 /* 主内容区域样式 */
 /* #region */
 .main {
@@ -84,48 +84,32 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  .sidebar {
+    flex: 1;
+    padding: 20px;
+    color: rgba(0, 0, 0, 0.787);
+    ul {
+      list-style: none;
+      padding: 0;
+      li {
+        margin-bottom: 10px;
+        a {
+          color: rgba(0, 0, 0, 0.787);
+          text-decoration: none;
+        }
+      }
+    }
+  }
+  .articles {
+    flex: 3;
+    padding: 20px;
+    section {
+      margin-bottom: 30px;
+      h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+    }
+  }
 }
-/* #endregion */
-
-/* 侧边栏样式 */
-/* #region */
-.sidebar {
-  flex: 1;
-  padding: 20px;
-  background-color: #f0f0f0;
-}
-
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar li {
-  margin-bottom: 10px;
-}
-
-.sidebar a {
-  color: #333;
-  text-decoration: none;
-}
-/* #endregion */
-
-/* 文章列表样式 */
-/* #region */
-.articles {
-  flex: 3;
-  padding: 20px;
-}
-
-.articles section {
-  margin-bottom: 30px;
-}
-
-.articles h2 {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-/* #endregion */
-
-
 </style>

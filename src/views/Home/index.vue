@@ -2,7 +2,11 @@
   <div class="container">
     <div class="app">
       <div class="cardList">
-        <button class="cardList__btn btn btn--left" @click="swapCards('left')">
+        <button
+          class="cardList__btn btn btn--left"
+          @click="swapCards('left')"
+          ref="btnLeft"
+        >
           <div class="icon">
             <svg>
               <use xlink:href="#arrow-left"></use>
@@ -10,22 +14,34 @@
           </div>
         </button>
 
-        <div class="cards__wrapper" ref="cardsContainerEl">
-          <div class="card current--card">
+        <div class="cards__wrapper" ref="cardsWrapper">
+          <div class="card current--card" ref="currentCard">
             <div class="card__image">
-              <img src="https://source.unsplash.com/Z8dtTatMVMw" alt="" />
+              <img
+                src="../../assets/cards/photo-1497106636505-e4fd6e16d74c.jpg"
+                alt=""
+                ref="images"
+              />
             </div>
           </div>
 
           <div class="card next--card">
             <div class="card__image">
-              <img src="https://source.unsplash.com/9dmycbFE7mQ" alt="" />
+              <img
+                src="../../assets/cards/photo-1563722680966-fd2b17fc0ddf.jpg"
+                alt=""
+                ref="images"
+              />
             </div>
           </div>
 
           <div class="card previous--card">
             <div class="card__image">
-              <img src="https://source.unsplash.com/m7K4KzL5aQ8" alt="" />
+              <img
+                src="../../assets/cards/photo-1541961817716-44060761e345.jpg"
+                alt=""
+                ref="images"
+              />
             </div>
           </div>
         </div>
@@ -33,6 +49,7 @@
         <button
           class="cardList__btn btn btn--right"
           @click="swapCards('right')"
+          ref="btnRight"
         >
           <div class="icon">
             <svg>
@@ -44,19 +61,19 @@
 
       <div class="infoList">
         <div class="info__wrapper">
-          <div class="info current--info">
-            <h1 class="text name">Highlands</h1>
+          <div class="info current--info" ref="currentInfo">
+            <h1 class="text name" ref="cur">Highlands</h1>
             <h4 class="text location">Scotland</h4>
             <p class="text description">The mountains are calling</p>
           </div>
 
-          <div class="info next--info">
+          <div class="info next--info" ref="nextInfo">
             <h1 class="text name">Machu Pichu</h1>
             <h4 class="text location">Peru</h4>
             <p class="text description">Adventure is never far away</p>
           </div>
 
-          <div class="info previous--info">
+          <div class="info previous--info" ref="previousInfo">
             <h1 class="text name">Chamonix</h1>
             <h4 class="text location">France</h4>
             <p class="text description">Let your dreams come true</p>
@@ -66,21 +83,34 @@
 
       <div class="app__bg">
         <div class="app__bg__image current--image">
-          <img src="https://source.unsplash.com/Z8dtTatMVMw" alt="" />
+          <img
+            src="https://source.unsplash.com/Z8dtTatMVMw"
+            alt=""
+            ref="images"
+          />
         </div>
         <div class="app__bg__image next--image">
-          <img src="https://source.unsplash.com/9dmycbFE7mQ" alt="" />
+          <img
+            src="https://source.unsplash.com/9dmycbFE7mQ"
+            alt=""
+            ref="images"
+          />
         </div>
         <div class="app__bg__image previous--image">
-          <img src="https://source.unsplash.com/m7K4KzL5aQ8" alt="" />
+          <img
+            src="https://source.unsplash.com/m7K4KzL5aQ8"
+            alt=""
+            ref="images"
+          />
         </div>
       </div>
     </div>
 
     <div class="loading__wrapper">
       <div class="loader--text">Loading...</div>
+      <!-- 进度条 -->
       <div class="loader">
-        <span></span>
+        <span ref="loaderSpan"></span>
       </div>
     </div>
 
@@ -122,17 +152,19 @@
 </template>
 
 <script>
-import { gsap } from "gsap"
-import imagesLoaded from "imagesloaded"
+import { gsap } from "gsap";
+import imagesLoaded from "imagesloaded";
 
 export default {
   name: "HomeComp",
   components: {},
   methods: {
     init() {
-      let tl = gsap.timeline()
+      let tl = gsap.timeline();
 
-      tl.to(document.querySelector(".cards__wrapper").children, {
+      console.log(this.$refs.cardsWrapper.children);
+
+      tl.to(this.$refs.cardsWrapper.children, {
         delay: 0.15,
         duration: 0.5,
         stagger: {
@@ -163,24 +195,25 @@ export default {
             pointerEvents: "all",
           },
           "-=0.4"
-        )
+        );
     },
     waitForImages() {
-      const images = [...document.querySelectorAll("img")]
-      const totalImages = images.length
-      let loadedImages = 0
-      const loaderEl = document.querySelector(".loader span")
+      const images = [...document.querySelectorAll("img")];
+      console.log(images);
+      const totalImages = images.length;
+      let loadedImages = 0;
+      const loaderEl = document.querySelector(".loader span");
 
-      gsap.set(document.querySelector(".cards__wrapper").children, {
+      gsap.set(this.$refs.cardsWrapper.children, {
         "--card-translateY-offset": "100vh",
-      })
+      });
       gsap.set(
         document.querySelector(".current--info").querySelectorAll(".text"),
         {
           translateY: "2.5rem",
           opacity: 0,
         }
-      )
+      );
       gsap.set(
         [
           document.querySelector(".btn--left"),
@@ -190,19 +223,19 @@ export default {
           pointerEvents: "none",
           opacity: "0",
         }
-      )
+      );
 
       images.forEach((image) => {
         imagesLoaded(image, (instance) => {
           if (instance.isComplete) {
-            loadedImages++
-            let loadProgress = loadedImages / totalImages
+            loadedImages++;
+            let loadProgress = loadedImages / totalImages;
 
             gsap.to(loaderEl, {
               duration: 1,
               scaleX: loadProgress,
               backgroundColor: `hsl(${loadProgress * 120}, 100%, 50%`,
-            })
+            });
 
             if (totalImages == loadedImages) {
               gsap
@@ -212,74 +245,76 @@ export default {
                   opacity: 0,
                   pointerEvents: "none",
                 })
-                .call(() => this.init())
+                .call(() => this.init());
             }
           }
-        })
-      })
+        });
+      });
+    },
+
+    updateCard(e) {
+      const card = e.currentTarget;
+      const box = card.getBoundingClientRect();
+      const centerPosition = {
+        x: box.left + box.width / 2,
+        y: box.top + box.height / 2,
+      };
+      let angle = Math.atan2(e.pageX - centerPosition.x, 0) * (35 / Math.PI);
+      gsap.set(card, {
+        "--current-card-rotation-offset": `${angle}deg`,
+      });
+      const currentInfoEl = document.querySelector(".current--info");
+      gsap.set(currentInfoEl, {
+        rotateY: `${angle}deg`,
+      });
     },
 
     removeCardEvents(card) {
-      card.removeEventListener("pointermove", this.updateCard)
+      card.removeEventListener("pointermove", this.updateCard);
     },
     initCardEvents() {
       document
         .querySelector(".current--card")
-        .addEventListener("pointermove", this.updateCard)
+        .addEventListener("pointermove", this.updateCard);
       document
         .querySelector(".current--card")
         .addEventListener("pointerout", (e) => {
-          this.resetCardTransforms(e)
-        })
+          this.resetCardTransforms(e);
+        });
     },
     resetCardTransforms(e) {
-      const card = e.currentTarget
-      const currentInfoEl = document.querySelector(".current--info")
+      const card = e.currentTarget;
+      const currentInfoEl = document.querySelector(".current--info");
       gsap.set(card, {
         "--current-card-rotation-offset": 0,
-      })
+      });
       gsap.set(currentInfoEl, {
         rotateY: 0,
-      })
+      });
     },
-    updateCard(e) {
-      const card = e.currentTarget
-      const box = card.getBoundingClientRect()
-      const centerPosition = {
-        x: box.left + box.width / 2,
-        y: box.top + box.height / 2,
-      }
-      let angle = Math.atan2(e.pageX - centerPosition.x, 0) * (35 / Math.PI)
-      gsap.set(card, {
-        "--current-card-rotation-offset": `${angle}deg`,
-      })
-      const currentInfoEl = document.querySelector(".current--info")
-      gsap.set(currentInfoEl, {
-        rotateY: `${angle}deg`,
-      })
-    },
+
     swapInfosClass(direction) {
-      const currentInfoEl = document.querySelector(".current--info")
-      const previousInfoEl = document.querySelector(".previous--info")
-      const nextInfoEl = document.querySelector(".next--info")
-      currentInfoEl.classList.remove("current--info")
-      previousInfoEl.classList.remove("previous--info")
-      nextInfoEl.classList.remove("next--info")
+      const currentInfoEl = document.querySelector(".current--info");
+      const previousInfoEl = document.querySelector(".previous--info");
+      const nextInfoEl = document.querySelector(".next--info");
+      currentInfoEl.classList.remove("current--info");
+      previousInfoEl.classList.remove("previous--info");
+      nextInfoEl.classList.remove("next--info");
 
       if (direction === "right") {
-        currentInfoEl.classList.add("previous--info")
-        nextInfoEl.classList.add("current--info")
-        previousInfoEl.classList.add("next--info")
+        currentInfoEl.classList.add("previous--info");
+        nextInfoEl.classList.add("current--info");
+        previousInfoEl.classList.add("next--info");
       } else if (direction === "left") {
-        currentInfoEl.classList.add("next--info")
-        nextInfoEl.classList.add("previous--info")
-        previousInfoEl.classList.add("current--info")
+        currentInfoEl.classList.add("next--info");
+        nextInfoEl.classList.add("previous--info");
+        previousInfoEl.classList.add("current--info");
       }
     },
     changeInfo(direction) {
-      let currentInfoEl = document.querySelector(".current--info")
-      let previousInfoEl = document.querySelector(".previous--info")
-      let nextInfoEl = document.querySelector(".next--info")
+      let currentInfoEl = document.querySelector(".current--info");
+      let previousInfoEl = document.querySelector(".previous--info");
+      let nextInfoEl = document.querySelector(".next--info");
 
       gsap
         .timeline()
@@ -305,7 +340,7 @@ export default {
           "-="
         )
         .call(() => {
-          this.swapInfosClass(direction)
+          this.swapInfosClass(direction);
         })
         .call(() => this.initCardEvents())
         .fromTo(
@@ -333,87 +368,142 @@ export default {
             opacity: 1,
             pointerEvents: "all",
           }
-        )
+        );
     },
 
     // 要用swapCards里面的参数
     swapCardsClass(direction) {
-      const currentCardEl = document.querySelector(".current--card")
-      const previousCardEl = document.querySelector(".previous--card")
-      const nextCardEl = document.querySelector(".next--card")
-      currentCardEl.classList.remove("current--card")
-      previousCardEl.classList.remove("previous--card")
-      nextCardEl.classList.remove("next--card")
+      const currentCardEl = document.querySelector(".current--card");
+      const previousCardEl = document.querySelector(".previous--card");
+      const nextCardEl = document.querySelector(".next--card");
+      currentCardEl.classList.remove("current--card");
+      previousCardEl.classList.remove("previous--card");
+      nextCardEl.classList.remove("next--card");
 
-      const currentBgImageEl = document.querySelector(".current--image")
-      const previousBgImageEl = document.querySelector(".previous--image")
-      const nextBgImageEl = document.querySelector(".next--image")
-      currentBgImageEl.classList.remove("current--image")
-      previousBgImageEl.classList.remove("previous--image")
-      nextBgImageEl.classList.remove("next--image")
+      const currentBgImageEl = document.querySelector(".current--image");
+      const previousBgImageEl = document.querySelector(".previous--image");
+      const nextBgImageEl = document.querySelector(".next--image");
+      currentBgImageEl.classList.remove("current--image");
+      previousBgImageEl.classList.remove("previous--image");
+      nextBgImageEl.classList.remove("next--image");
 
-      currentCardEl.style.zIndex = "50"
-      currentBgImageEl.style.zIndex = "-2"
+      currentCardEl.style.zIndex = "50";
+      currentBgImageEl.style.zIndex = "-2";
 
       if (direction === "right") {
-        previousCardEl.style.zIndex = "20"
-        nextCardEl.style.zIndex = "30"
+        previousCardEl.style.zIndex = "20";
+        nextCardEl.style.zIndex = "30";
 
-        nextBgImageEl.style.zIndex = "-1"
+        nextBgImageEl.style.zIndex = "-1";
 
-        currentCardEl.classList.add("previous--card")
-        previousCardEl.classList.add("next--card")
-        nextCardEl.classList.add("current--card")
+        currentCardEl.classList.add("previous--card");
+        previousCardEl.classList.add("next--card");
+        nextCardEl.classList.add("current--card");
 
-        currentBgImageEl.classList.add("previous--image")
-        previousBgImageEl.classList.add("next--image")
-        nextBgImageEl.classList.add("current--image")
+        currentBgImageEl.classList.add("previous--image");
+        previousBgImageEl.classList.add("next--image");
+        nextBgImageEl.classList.add("current--image");
       } else if (direction === "left") {
-        previousCardEl.style.zIndex = "30"
-        nextCardEl.style.zIndex = "20"
+        previousCardEl.style.zIndex = "30";
+        nextCardEl.style.zIndex = "20";
 
-        previousBgImageEl.style.zIndex = "-1"
+        previousBgImageEl.style.zIndex = "-1";
 
-        currentCardEl.classList.add("next--card")
-        previousCardEl.classList.add("current--card")
-        nextCardEl.classList.add("previous--card")
+        currentCardEl.classList.add("next--card");
+        previousCardEl.classList.add("current--card");
+        nextCardEl.classList.add("previous--card");
 
-        currentBgImageEl.classList.add("next--image")
-        previousBgImageEl.classList.add("current--image")
-        nextBgImageEl.classList.add("previous--image")
+        currentBgImageEl.classList.add("next--image");
+        previousBgImageEl.classList.add("current--image");
+        nextBgImageEl.classList.add("previous--image");
       }
     },
     swapCards(direction) {
-      this.changeInfo(direction)
-      this.swapCardsClass(direction)
+      this.changeInfo(direction);
+      this.swapCardsClass(direction);
 
-      this.removeCardEvents(document.querySelector(".current--card"))
+      this.removeCardEvents(document.querySelector(".current--card"));
+    },
+    handleSwapCards(direction) {
+      // Here you can handle the card swap logic,
+      // and also update the related components as needed.
+      this.changeInfo(direction);
+      this.swapCardsClass(direction);
+      // ... other related logic ...
     },
   },
   mounted() {
-    this.initCardEvents()
-    this.waitForImages()
+    this.initCardEvents();
+    this.waitForImages();
   },
-}
+};
 </script>
 
-<style scoped lang="css">
+<style lang="scss" scoped>
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap");
+
+@media only screen and (max-width: 768px) {
+  :root {
+    --card-width: 17rem;
+    --card-height: 24.375rem;
+  }
+  .cardList {
+    &__btn {
+      --btn-size: 80px !important;
+      &.btn--left {
+        left: 20% !important;
+      }
+      &.btn--right {
+        right: 20% !important;
+      }
+    }
+  }
+  .infoList {
+    margin-left: 30px;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  :root {
+    --card-width: 15.5rem;
+    --card-height: 21.75rem;
+  }
+  .cardList {
+    &__btn {
+      --btn-size: 80px !important;
+      &.btn--left {
+        left: 25% !important;
+        top: -60px;
+      }
+      &.btn--right {
+        right: 25% !important;
+        top: -60px;
+      }
+    }
+  }
+  .infoList {
+    margin-left: 40px;
+  }
+}
+
+.container {
+  width: 100%;
+  height: 95%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.787);
+  overflow: hidden;
+}
 
 button {
   border: none;
   background: none;
   cursor: pointer;
-}
-
-button:focus {
-  outline: none;
-  border: none;
-}
-
-.container {
-  width: 100%;
-  height: 100%;
+  &:focus {
+    outline: none;
+    border: none;
+  }
 }
 
 .app {
@@ -422,112 +512,109 @@ button:focus {
   height: 100%;
   display: flex;
   justify-content: center;
-}
+  align-items: center;
 
-.app__bg {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: -5;
-  filter: blur(8px);
-  pointer-events: none;
-  user-select: none;
-  overflow: hidden;
-}
+  &__bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -5;
+    filter: blur(8px);
+    pointer-events: none;
+    user-select: none;
+    overflow: hidden;
 
-.app__bg::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: #000;
-  z-index: 1;
-  opacity: 0.8;
-}
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      // background: #000;
+      z-index: 1;
+      opacity: 0.8;
+    }
 
-.app__bg__image {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%) translateX(var(--image-translate-offset, 0));
-  width: 180%;
-  height: 180%;
-  transition: transform 1000ms ease, opacity 1000ms ease;
-  overflow: hidden;
-}
+    &__image {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%)
+        translateX(var(--image-translate-offset, 0));
+      width: 180%;
+      height: 180%;
+      transition: transform 1000ms ease, opacity 1000ms ease;
+      overflow: hidden;
 
-.app__bg__image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.app__bg__image.current--image {
-  opacity: 1;
-  --image-translate-offset: 0;
-}
-
-.app__bg__image.previous--image,
-.app__bg__image.next--image {
-  opacity: 0;
-}
-
-.app__bg__image.previous--image {
-  --image-translate-offset: -25%;
-}
-
-.app__bg__image.next--image {
-  --image-translate-offset: 25%;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      &.current--image {
+        opacity: 1;
+        --image-translate-offset: 0;
+      }
+      &.previous--image,
+      &.next--image {
+        opacity: 0;
+      }
+      &.previous--image {
+        --image-translate-offset: -25%;
+      }
+      &.next--image {
+        --image-translate-offset: 25%;
+      }
+    }
+  }
 }
 
 .cardList {
-  position: relative;
+  position: absolute;
   width: calc(3 * var(--card-width));
   height: auto;
-}
 
-.cardList__btn {
-  --btn-size: 35px;
-  width: var(--btn-size);
-  height: var(--btn-size);
-  position: absolute;
-  top: 25%;
-  transform: translateY(-50%);
-  z-index: 100;
-}
+  &__btn {
+    --btn-size: 50px;
+    width: var(--btn-size);
+    height: var(--btn-size);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
 
-.cardList__btn.btn--left {
-  left: -5%;
-}
+    &.btn--left {
+      left: 5%;
+    }
+    &.btn--right {
+      right: 5%;
+    }
 
-.cardList__btn.btn--right {
-  right: -5%;
-}
+    .icon {
+      width: 100%;
+      height: 100%;
+      svg {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
 
-.cardList__btn .icon {
-  width: 100%;
-  height: 100%;
-}
-
-.cardList__btn .icon svg {
-  width: 100%;
-  height: 100%;
-}
-
-.cardList .cards__wrapper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  perspective: 1000px;
+  .cards__wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    perspective: 1000px;
+  }
 }
 
 .card {
   --card-translateY-offset: 100vh;
+
   position: absolute;
   left: 50%;
-  top: 25%;
+  top: 50%;
   transform: translate(-50%, -50%) translateX(var(--card-translateX-offset))
     translateY(var(--card-translateY-offset))
     rotateY(var(--card-rotation-offset)) scale(var(--card-scale-offset));
@@ -537,59 +624,58 @@ button:focus {
   transition: transform var(--card-transition-duration)
     var(--card-transition-easing);
   user-select: none;
-}
 
-.card::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: #000;
-  z-index: 1;
-  transition: opacity var(--card-transition-duration)
-    var(--card-transition-easing);
-  opacity: calc(1 - var(--opacity));
-}
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    z-index: 1;
+    transition: opacity var(--card-transition-duration)
+      var(--card-transition-easing);
+    opacity: calc(1 - var(--opacity));
+  }
 
-.card .card__image {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
+  &__image {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
 
-.card .card__image img {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+  &.current--card {
+    --current-card-rotation-offset: 0;
+    --card-translateX-offset: 0;
+    --card-rotation-offset: var(--current-card-rotation-offset);
+    --card-scale-offset: 1.2;
+    --opacity: 0.8;
+  }
 
-.card.current--card {
-  --current-card-rotation-offset: 0;
-  --card-translateX-offset: 0;
-  --card-rotation-offset: var(--current-card-rotation-offset);
-  --card-scale-offset: 1.2;
-  --opacity: 0.8;
-}
+  &.previous--card {
+    --card-translateX-offset: calc(-1 * var(--card-width) * 1.1);
+    --card-rotation-offset: 25deg;
+  }
 
-.card.previous--card {
-  --card-translateX-offset: calc(-1 * var(--card-width) * 1.1);
-  --card-rotation-offset: 25deg;
-}
+  &.next--card {
+    --card-translateX-offset: calc(var(--card-width) * 1.1);
+    --card-rotation-offset: -25deg;
+  }
 
-.card.next--card {
-  --card-translateX-offset: calc(var(--card-width) * 1.1);
-  --card-rotation-offset: -25deg;
-}
-
-.card.previous--card,
-.card.next--card {
-  --card-scale-offset: 0.9;
-  --opacity: 0.4;
+  &.previous--card,
+  &.next--card {
+    --card-scale-offset: 0.9;
+    --opacity: 0.4;
+  }
 }
 
 .infoList {
@@ -597,17 +683,17 @@ button:focus {
   width: calc(3 * var(--card-width));
   height: var(--card-height);
   pointer-events: none;
-}
 
-.infoList .info__wrapper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-end;
-  perspective: 1000px;
-  transform-style: preserve-3d;
+  .info__wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+  }
 }
 
 .info {
@@ -616,66 +702,65 @@ button:focus {
   transform: translateZ(2rem);
   transition: transform var(--card-transition-duration)
     var(--card-transition-easing);
-}
+  .text {
+    position: relative;
+    font-family: "Montserrat";
+    font-size: calc(var(--card-width) * var(--text-size-offset, 0.2));
+    white-space: nowrap;
+    color: #fff;
+    width: fit-content;
+  }
 
-.info .text {
-  position: relative;
-  font-family: "Montserrat";
-  font-size: calc(var(--card-width) * var(--text-size-offset, 0.2));
-  white-space: nowrap;
-  color: #fff;
-  width: fit-content;
-}
+  .name,
+  .location {
+    text-transform: uppercase;
+  }
 
-.info .name,
-.info .location {
-  text-transform: uppercase;
-}
+  .location {
+    font-weight: 800;
+  }
 
-.info .location {
-  font-weight: 800;
-  --mg-left: 40px;
-  --text-size-offset: 0.12;
-  margin-left: var(--mg-left);
-  margin-bottom: calc(var(--mg-left) / 2);
-  padding-bottom: 0.8rem;
-}
+  .location {
+    --mg-left: 40px;
+    --text-size-offset: 0.12;
+    font-weight: 600;
+    margin-left: var(--mg-left);
+    margin-bottom: calc(var(--mg-left) / 2);
+    padding-bottom: 0.8rem;
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      background: #fff;
+      left: 0%;
+      transform: translate(calc(-1 * var(--mg-left)), -50%);
+    }
+    &::before {
+      top: 50%;
+      width: 20px;
+      height: 5px;
+    }
+    &::after {
+      bottom: 0;
+      width: 60px;
+      height: 2px;
+    }
+  }
 
-.info .location::before,
-.info .location::after {
-  content: "";
-  position: absolute;
-  background: #fff;
-  left: 0%;
-  transform: translate(calc(-1 * var(--mg-left)), -50%);
-}
+  .description {
+    --text-size-offset: 0.065;
+    font-weight: 500;
+  }
 
-.info .location::before {
-  top: 50%;
-  width: 20px;
-  height: 5px;
-}
-
-.info .location::after {
-  bottom: 0;
-  width: 60px;
-  height: 2px;
-}
-
-.info .description {
-  --text-size-offset: 0.065;
-  font-weight: 500;
-}
-
-.info.current--info {
-  opacity: 1;
-  display: block;
-}
-
-.info.previous--info,
-.info.next--info {
-  opacity: 0;
-  display: none;
+  &.current--info {
+    opacity: 1;
+    display: block;
+  }
+  &.previous--info,
+  &.next--info {
+    opacity: 0;
+    display: none;
+  }
 }
 
 .loading__wrapper {
@@ -690,30 +775,45 @@ button:focus {
   align-items: center;
   background: #000;
   z-index: 200;
+  .loader--text {
+    color: #fff;
+    font-family: "Montserrat";
+    font-weight: 500;
+    margin-bottom: 1.4rem;
+  }
+  .loader {
+    position: relative;
+    width: 12.5rem;
+    height: 0.125rem;
+    background: rgba(255, 255, 255, 0.25);
+    span {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgb(255, 0, 0);
+      transform: scaleX(0);
+      transform-origin: left;
+    }
+  }
 }
 
-.loading__wrapper .loader--text {
-  color: #fff;
-  font-family: "Montserrat";
-  font-weight: 500;
-  margin-bottom: 1.4rem;
-}
-
-.loading__wrapper .loader {
-  position: relative;
-  width: 200px;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.25);
-}
-
-.loading__wrapper .loader span {
+.support {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: rgb(255, 0, 0);
-  transform: scaleX(0);
-  transform-origin: left;
+  right: 10px;
+  bottom: 10px;
+  padding: 10px;
+  display: flex;
+  a {
+    margin: 0 10px;
+    color: #fff;
+    font-size: 1.8rem;
+    backface-visibility: hidden;
+    transition: all 150ms ease;
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
 }
 </style>

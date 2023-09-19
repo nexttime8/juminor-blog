@@ -1,21 +1,11 @@
 <template>
   <header class="header">
     <nav>
-      <!-- 静态结构 -->
-      <!-- <ul>
-        <li><a href="#">首页</a></li>
-        <li><a href="#">文章</a></li>
-        <li><a href="#">分类</a></li>
-        <li><a href="#">项目</a></li>
-        <li><a href="#">Github</a></li>
-        <li><a href="#">关于我</a></li>
-      </ul> -->
-      <!-- 动态导航 -->
       <ul class="nav-links">
         <li v-for="link in navs" :key="link.id">
-          <router-link v-if="link.isRoute" :to="link.toRoute">{{
-            link.title
-          }}</router-link>
+          <router-link v-if="link.isRoute" :to="link.toRoute">
+            {{ link.title }}
+          </router-link>
           <a v-else :href="link.toRoute" target="_blank">{{ link.title }}</a>
         </li>
       </ul>
@@ -68,47 +58,35 @@ export default {
       ],
       isNavbarHidden: false,
       lastScrollTop: 0,
-    }
+    };
   },
-  methods: {},
-}
+};
 </script>
 
-<style scoped lang="css">
+<style scoped lang="scss">
 /* 顶部导航栏样式 */
 /* #region */
 .header {
-  background-color: #333;
+  background-color: rgba(0, 0, 0, 0.787);
   color: #fff;
   padding: 0.625rem;
-}
-
-.header nav ul {
-  list-style: none;
-  display: flex;
-  justify-content: center;
-}
-
-.header nav li {
-  margin: 0 10px;
-}
-
-.header nav a {
-  color: #fff;
-  text-decoration: none;
-}
-
-router-link {
-  cursor: pointer;
-}
-
-.fixed-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 999;
-  /* ... 其他样式 ... */
+  nav {
+    ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      li {
+        margin: 0 10px;
+        a {
+          color: #fff;
+          text-decoration: none;
+        }
+        router-link {
+          cursor: pointer;
+        }
+      }
+    }
+  }
 }
 
 /* #endregion */

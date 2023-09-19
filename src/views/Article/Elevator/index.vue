@@ -11,7 +11,7 @@
 <script>
 export default {
   name: "ElevatorComp",
-}
+};
 </script>
 
 <style scoped lang="css">
@@ -19,10 +19,10 @@ export default {
 /* #region */
 .elevator {
   position: fixed;
-  right: 20px;
+  left: 20px;
   bottom: 5%;
   transform: translateY(-50%);
-  background-color: #fdf6f6;
+  background-color: #fdf4f4;
   padding: 10px;
   border-radius: 5px;
 }
@@ -37,7 +37,7 @@ export default {
 }
 
 .elevator a {
-  color: #333;
+  color: rgba(0, 0, 0, 0.787);
   text-decoration: none;
 }
 /* #endregion */
