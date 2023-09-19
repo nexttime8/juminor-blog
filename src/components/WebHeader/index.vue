@@ -33,24 +33,30 @@ export default {
         },
         {
           id: 3,
+          title: "列表",
+          toRoute: "/list",
+          isRoute: true, // 搞半天因为这里写错了，幸好用@click对router-link和标签进行了测试
+        },
+        {
+          id: 4,
           title: "分类",
           toRoute: "/sort",
           isRoute: true,
         },
         {
-          id: 4,
+          id: 5,
           title: "项目",
           toRoute: "https://github.com/nexttime8",
           isRoute: false,
         },
         {
-          id: 5,
+          id: 6,
           title: "Github",
           toRoute: "https://github.com/nexttime8",
           isRoute: false,
         },
         {
-          id: 6,
+          id: 7,
           title: "关于",
           toRoute: "/about",
           isRoute: true,
