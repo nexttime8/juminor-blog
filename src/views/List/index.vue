@@ -1,7 +1,6 @@
 <template>
-  <div>
-    <v-md-editor v-model="text" height="600px"></v-md-editor>
-    <v-md-editor :value="text" mode="preview"></v-md-editor>
+  <div class="container">
+    <v-md-editor :value="content" mode="preview"></v-md-editor>
   </div>
 </template>
 
@@ -13,22 +12,26 @@ export default {
   data() {
     return {
       text: "",
+      content: "## 大标题 \n ### 小标题",
     };
   },
-  created() {
+  mounted() {
     this.getArticleDetail();
   },
   methods: {
-    async getArticleDetail() {
-      const response = await getArticles(Number("109"));
-      this.ruleForm = response.data;
-      const [authorName, categoryName] = await Promise.all([
-        getCurrentAuthorName(this.ruleForm.authorId),
-        getCurrentArticleCate(this),
-      ]);
-      this.authorName = authorName;
-      this.categoryName = categoryName;
+    getArticleDetail() {
+      getArticles(115)
+        .then((response) => {
+          console.log(response);
+          this.content = response.data.content;
+        })
+        .catch((error) => {
+          console.error("Error fetching article:", error);
+        });
     },
   },
 };
 </script>
+
+<style lang="scss" scoped>
+</style>

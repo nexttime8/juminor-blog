@@ -1,5 +1,6 @@
 import axios from 'axios'
 import errorCode from '@/utils/errorCode'
+import { getToken } from '@/utils/auth'
 import { tansParams, } from "@/utils/general";
 import cache from '@/plugins/cache'
 
@@ -22,8 +23,13 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(config => {
     // 是否需要设置 token
+    /* const isToken = (config.headers || {}).isToken === false */
     // 是否需要防止数据重复提交
     const isRepeatSubmit = (config.headers || {}).repeatSubmit === false
+    /* 匿名访问，不要再鉴定token了 */
+    /* if (getToken() && !isToken) {
+        config.headers['Authorization'] = 'Bearer ' + getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+    } */
     // get请求映射params参数
     if (config.method === 'get' && config.params) {
         let url = config.url + '?' + tansParams(config.params);
@@ -68,6 +74,17 @@ service.interceptors.response.use(res => {
     const msg = errorCode[code] || res.data.msg || errorCode['default']
     // 二进制数据则直接返回
     if (res.request.responseType === 'blob' || res.request.responseType === 'arraybuffer') {
+        return res.data
+    } if (code === 500) {
+        Message({ message: msg, type: 'error' })
+        return Promise.reject(new Error(msg))
+    } else if (code === 601) {
+        Message({ message: msg, type: 'warning' })
+        return Promise.reject('error')
+    } else if (code !== 200) {
+        Notification.error({ title: msg })
+        return Promise.reject('error')
+    } else {
         return res.data
     }
 },

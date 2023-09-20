@@ -4,6 +4,7 @@ import About from "@/views/About"
 import Article from "@/views/Article"
 import Home from "@/views/Home"
 import Sort from "@/views/Sort"
+import Create from "@/views/Create"
 import List from "@/views/List"
 Vue.use(VueRouter)
 
@@ -19,6 +20,11 @@ export default new VueRouter({
       path: "/sort",
       name: "Sort",
       component: Sort,
+    },
+    {
+      path: "/create",
+      name: "Create",
+      component: Create,
     },
     {
       path: "/article",

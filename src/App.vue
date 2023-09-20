@@ -45,10 +45,17 @@ body {
 }
 
 /* 卡片大小移动适配 */
+@media only screen and (max-width: 992px) {
+  :root {
+    --card-width: 22rem;
+    --card-height: 28rem;
+  }
+}
+
 @media only screen and (max-width: 768px) {
   :root {
-    --card-width: 18.75rem;
-    --card-height: 25rem;
+    --card-width: 17rem;
+    --card-height: 23rem;
   }
 }
 

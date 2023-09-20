@@ -442,19 +442,36 @@ export default {
 <style lang="scss" scoped>
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap");
 
-@media only screen and (max-width: 768px) {
-  :root {
-    --card-width: 17rem;
-    --card-height: 24.375rem;
+@media only screen and (max-width: 992px) {
+  .cardList {
+    &__btn {
+      --btn-size: 70px !important;
+      &.btn--left {
+        left: 15% !important;
+        top: -50px;
+      }
+      &.btn--right {
+        right: 15% !important;
+        top: -50px;
+      }
+    }
   }
+  .infoList {
+    margin-left: 30px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
   .cardList {
     &__btn {
       --btn-size: 80px !important;
       &.btn--left {
         left: 20% !important;
+        top: -50px;
       }
       &.btn--right {
         right: 20% !important;
+        top: -50px;
       }
     }
   }
@@ -464,10 +481,6 @@ export default {
 }
 
 @media only screen and (max-width: 480px) {
-  :root {
-    --card-width: 15.5rem;
-    --card-height: 21.75rem;
-  }
   .cardList {
     &__btn {
       --btn-size: 80px !important;
@@ -488,7 +501,7 @@ export default {
 
 .container {
   width: 100%;
-  height: 95%;
+  height: 95.77%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -576,7 +589,7 @@ button {
   height: auto;
 
   &__btn {
-    --btn-size: 50px;
+    --btn-size: 60px;
     width: var(--btn-size);
     height: var(--btn-size);
     position: absolute;
@@ -585,10 +598,10 @@ button {
     z-index: 100;
 
     &.btn--left {
-      left: 5%;
+      left: 10%;
     }
     &.btn--right {
-      right: 5%;
+      right: 10%;
     }
 
     .icon {

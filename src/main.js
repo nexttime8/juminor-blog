@@ -4,12 +4,11 @@ import router from "@/router"
 
 Vue.config.productionTip = false
 
+import VMdEditor from '@kangc/v-md-editor/lib/codemirror-editor';
+Vue.use(VMdEditor);
+
 /* 预览markdown */
-import VueMarkdownEditor from '@kangc/v-md-editor';
 import '@kangc/v-md-editor/lib/style/base-editor.css';
-import vuepressTheme from '@kangc/v-md-editor/lib/theme/vuepress.js';
-VueMarkdownEditor.use(vuepressTheme);
-Vue.use(VueMarkdownEditor);
 
 import VMdPreview from '@kangc/v-md-editor/lib/preview';
 import '@kangc/v-md-editor/lib/style/preview.css';
@@ -20,7 +19,9 @@ VMdPreview.use(githubTheme, {
   Hljs: hljs,
 });
 Vue.use(VMdPreview);
-
+VMdEditor.use(githubTheme, {
+  Hljs: hljs,
+});
 
 new Vue({
   render: (h) => h(App),

@@ -45,18 +45,24 @@ export default {
         },
         {
           id: 5,
+          title: "发布",
+          toRoute: "/create",
+          isRoute: true,
+        },
+        {
+          id: 6,
           title: "项目",
           toRoute: "https://github.com/nexttime8",
           isRoute: false,
         },
         {
-          id: 6,
+          id: 7,
           title: "Github",
           toRoute: "https://github.com/nexttime8",
           isRoute: false,
         },
         {
-          id: 7,
+          id: 8,
           title: "关于",
           toRoute: "/about",
           isRoute: true,
