@@ -17,28 +17,4 @@ export function getCategories(categoryId) {
   })
 }
 
-// 新增博客文章分类
-export function addCategories(data) {
-  return request({
-    url: '/article/categories',
-    method: 'post',
-    data: data
-  })
-}
-
-// 修改博客文章分类
-export function updateCategories(data) {
-  return request({
-    url: '/article/categories',
-    method: 'put',
-    data: data
-  })
-}
-
-// 删除博客文章分类
-export function delCategories(categoryId) {
-  return request({
-    url: '/article/categories/' + categoryId,
-    method: 'delete'
-  })
-}
+// 新增、修改、删除功能不可用

@@ -31,7 +31,7 @@ export default {
           this.content = response.data.content;
         })
         .catch((error) => {
-          console.error("Error fetching article:", error);
+          console.log("Error fetching article:", error);
         });
     },
     // 没什么没有成功触发?

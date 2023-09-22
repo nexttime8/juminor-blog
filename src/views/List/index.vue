@@ -1,246 +1,129 @@
 <template>
-  <div class="container">
-    <v-md-preview
-      :text="content"
-      @copy-code-success="handleCopyCodeSuccess"
-      ref="preview"
-      v-model="content"
-    >
-    </v-md-preview>
-    <div class="catalog" :class="{ active: showSidebar }" ref="catalog">
-      <div
-        v-for="(anchor, index) in titles"
-        :style="{ padding: `10px 0 10px ${anchor.indent * 20}px` }"
-        @click="handleAnchorClick(anchor)"
-        :key="index"
-        class="item"
+  <div class="list-container">
+    <!-- 内容搜索框 -->
+    <div class="contentSearch">
+      <input type="text" required />
+      <label ref="labelRef"
+        >please&nbsp;enter&nbsp;your&nbsp;search&nbsp;here</label
       >
-        <a style="cursor: pointer">{{ anchor.title }}</a>
-      </div>
     </div>
-    <div class="elevator-nav" v-if="titles.length">
-      <div class="back-to-top" @click="scrollToTop">回到顶部</div>
+    <div class="articleList">
+      <div
+        class="item"
+        v-for="article in articlesList"
+        :key="article.articleId"
+      ></div>
     </div>
-    <div id="reading-progress-bar" :style="{ width: progressBarWidth }"></div>
   </div>
 </template>
 
 <script>
-// 查看文章列表详情
-import { getArticles } from "@/api/article/list";
+import { listArticles } from "@/api/article/list";
 export default {
-  name: "InfoComp",
+  name: "ArticleList",
   data() {
     return {
-      content: "   ## loading",
-      titles: [],
-      showSidebar: false, // 控制侧边栏的显示
-      progressBarWidth: "0%", // 控制进度条的宽度
+      articlesList: [],
+      queryParams: {
+        pageSize: 10,
+        pageNum: 1,
+      },
     };
   },
   methods: {
-    getArticleDetail() {
-      getArticles(120)
-        .then((response) => {
-          // console.log(response);
-          this.content = response.data.content;
+    typeAnimation() {
+      const label = document.querySelector(".contentSearch label");
+      const textList = label.innerText.split("");
 
-          // 数据已经被设置，稍等片刻以让Vue更新DOM
-          this.$nextTick(() => {
-            this.updateTitles();
-          });
+      label.innerHTML = textList
+        .map(
+          (letter, i) =>
+            `<span style="transition-delay: ${i * 30}ms;filter: hue-rotate(${
+              i * 10
+            }deg);">${letter}</span>`
+        )
+        .join("");
+    },
+    getArticlesList(queryParams) {
+      listArticles(queryParams)
+        .then((response) => {
+          this.articlesList = response.rows;
+          console.log(response);
         })
         .catch((error) => {
           console.error("Error fetching article:", error);
         });
     },
-    updateTitles() {
-      const anchors =
-        this.$refs.preview.$el.querySelectorAll("h1,h2,h3,h4,h5,h6");
-      const titles = Array.from(anchors).filter(
-        (title) => !!title.innerText.trim()
-      );
-
-      if (!titles.length) {
-        this.titles = [];
-        return;
-      }
-
-      const hTags = Array.from(
-        new Set(titles.map((title) => title.tagName))
-      ).sort();
-
-      this.titles = titles.map((el) => ({
-        title: el.innerText,
-        lineIndex: el.getAttribute("data-v-md-line"),
-        indent: hTags.indexOf(el.tagName),
-        offsetTop: el.offsetTop,
-      }));
-    },
-    handleAnchorClick(anchor) {
-      window.scrollTo({
-        top: anchor.offsetTop,
-        behavior: "smooth",
-      });
-    },
-    handleCopyCodeSuccess(code) {
-      alert(code + "复制成功");
-    },
-    // 回到顶部
-    scrollToTop() {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    },
-    // 监听滚动
-    onScroll() {
-      const totalHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (window.scrollY / totalHeight) * 100;
-
-      // 更新进度条的宽度
-      this.progressBarWidth = `${progress}%`;
-
-      // 检查是否滚动超过一屏
-      if (window.scrollY > window.innerHeight) {
-        this.showSidebar = true;
-      }
-    },
-  },
-  // 在组件被销毁前移除事件监听
-  beforeDestroy() {
-    window.removeEventListener("scroll", this.scrollHandler);
   },
   mounted() {
-    this.getArticleDetail();
-    this.scrollHandler = this.onScroll;
-    window.addEventListener("scroll", this.scrollHandler);
+    this.typeAnimation();
+    this.getArticlesList();
   },
 };
 </script>
 
-<style lang="scss" scoped>
-.container {
-  --spacing-lg: 20px;
-  --spacing-md: 15px;
-  --spacing-sm: 10px;
-  --spacing-xs: 5px;
 
-  --catalog-width-lg: 12.5rem;
-  --catalog-width-md: 15.625rem;
-  --catalog-width-sm: 12.5rem;
-  --catalog-width-xs: 6.25rem;
+<style lang="scss" >
+@import url("https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap");
 
-  padding: var(--spacing-lg);
-  display: grid;
-  grid-template-columns: 75% 25%;
-  .catalog {
-    position: fixed;
-    top: var(--catalog-width-xs); // 距离页面顶部的距离
-    right: var(--spacing-lg); // 距离页面左侧的距离
-    border-radius: 3% 3% 3% 3%/1% 1% 1% 1%;
-    padding-left: 10px;
-    color: #a08a8a;
-    opacity: 0;
-    transform: translateX(110%);
-    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-    &.active {
-      opacity: 1;
-      transform: translateX(0);
-    }
-    .item {
-      width: var(--catalog-width-lg);
-    }
-  }
-  .elevator-nav {
-    display: none;
-    position: fixed;
-    bottom: var(--spacing-sm); // 距离页面顶部的距离
-    right: var(--spacing-sm); // 距离页面左侧的距离
-    border-radius: 3% 3% 3% 3%/1% 1% 1% 1%;
-    padding-left: 10px;
-    color: #a08a8a;
-    .back-to-top {
-      cursor: pointer;
-      background-color: #969ea2;
-      color: #fff;
-      padding: 5px 10px;
-      border-radius: 3px;
-      transition: background-color 0.3s;
-      &:hover {
-        background-color: darken(#383f43, 10%);
-      }
-    }
-  }
+.list-container {
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 96.2vh; // 网页端适配
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.787), #09203f);
 }
 
-// 适配大屏幕（大于 992px）
-@media screen and (min-width: 993px) {
-  .container {
-    padding: var(--spacing-sm);
-    font-size: 14px; // 减小字体大小
-    .v-md-editor-preview {
-      margin-left: 0 !important; // 取消左边距
-    }
-    .elevator-nav {
-      bottom: var(--spacing-md); // 减小底部距离
-      right: var(--spacing-md); // 减小右侧距离
+.contentSearch {
+  position: relative;
+  width: 450px;
 
-      .back-to-top {
-        padding: 3px 6px; // 减小内边距
-      }
-    }
-  }
-}
+  input {
+    width: 100%;
+    padding-block: 10px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    border-bottom: 2px solid #999;
 
-@media screen and (max-width: 768px) {
-  .container {
-    padding: var(--spacing-sm);
-    font-size: 14px; // 减小字体大小
-    .v-md-editor-preview {
-      margin-left: 0 !important; // 取消左边距
-    }
-    .elevator-nav {
-      bottom: var(--spacing-sm); // 减小底部距离
-      right: var(--spacing-sm); // 减小右侧距离
+    color: #fff;
+    letter-spacing: 0.05em;
+    font-size: 1.25em;
+    transition: 0.5s;
 
-      .back-to-top {
-        padding: 3px 6px; // 减小内边距
-      }
+    &:focus,
+    &:valid {
+      border-bottom-color: #fff;
+    }
+
+    &:focus ~ label span,
+    &:valid ~ label span {
+      color: #0f0;
+      text-shadow: 0 0 5px #0f0, 0 0 15px #0f0, 0 0 30px #0f0;
+      transform: translateY(-30px);
     }
   }
-}
 
-// 适配小屏幕（小于或等于 480px）
-@media screen and (max-width: 480px) {
-  .container {
-    // 在这里添加适用于小屏幕（如手机）的样式
-    padding: var(--spacing-sm);
-    font-size: 14px;
+  label {
+    pointer-events: none; // 防止挡住input,使其不会捕获鼠标事件
+    position: absolute;
+    left: 0;
 
-    .v-md-editor-preview {
-      margin-left: 0 !important;
-    }
+    font-size: 1.25em;
+    color: #666;
+    user-select: none;
 
-    .elevator-nav {
-      bottom: var(--spacing-xs);
-      right: var(--spacing-xs);
+    span {
+      display: inline-flex;
+      flex-direction: row;
 
-      .back-to-top {
-        padding: 3px 6px;
-      }
+      font-size: 1.25em;
+      letter-spacing: 0.05em;
+      transition: 0.25s cubic-bezier(0.5, 1, 0.5, 1.5);
     }
   }
-}
-
-#reading-progress-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 4px; /* 可以自行调整高度 */
-  background: #9fa0a1; /* 选择你喜欢的颜色 */
-  width: 0%;
-  z-index: 1000; /* 确保它在其他内容的上面 */
 }
 </style>

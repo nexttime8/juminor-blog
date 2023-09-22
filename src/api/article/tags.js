@@ -25,29 +25,5 @@ export function getTagsIdByName(name) {
     })
 }
 
+// 新增、修改、删除功能不可用
 
-// 新增博客标签分类
-export function addTags(data) {
-    return request({
-        url: '/article/tags',
-        method: 'post',
-        data: data
-    })
-}
-
-// 修改博客标签分类
-export function updateTags(data) {
-    return request({
-        url: '/article/tags',
-        method: 'put',
-        data: data
-    })
-}
-
-// 删除博客标签分类
-export function delTags(tagsId) {
-    return request({
-        url: '/article/tags/' + tagsId,
-        method: 'delete'
-    })
-}

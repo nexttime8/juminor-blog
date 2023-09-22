@@ -1,6 +1,5 @@
 import axios from 'axios'
 import errorCode from '@/utils/errorCode'
-import { getToken } from '@/utils/auth'
 import { tansParams, } from "@/utils/general";
 import cache from '@/plugins/cache'
 
@@ -76,13 +75,25 @@ service.interceptors.response.use(res => {
     if (res.request.responseType === 'blob' || res.request.responseType === 'arraybuffer') {
         return res.data
     } if (code === 500) {
-        Message({ message: msg, type: 'error' })
+        new Noty({
+            type: "error",
+            text: msg,
+            layout: 'bottomLeft',
+        })
         return Promise.reject(new Error(msg))
     } else if (code === 601) {
-        Message({ message: msg, type: 'warning' })
+        new Noty({
+            type: "warning",
+            text: msg,
+            layout: 'bottomLeft',
+        })
         return Promise.reject('error')
     } else if (code !== 200) {
-        Notification.error({ title: msg })
+        new Noty({
+            type: "error",
+            text: msg,
+            layout: 'bottomLeft',
+        })
         return Promise.reject('error')
     } else {
         return res.data
