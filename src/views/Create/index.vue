@@ -4,6 +4,7 @@
       :value="content"
       @copy-code-success="handleCopyCodeSuccess"
       left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link img code | todo-list emoji | save"
+      v-model="content"
     ></v-md-editor>
   </div>
 </template>
