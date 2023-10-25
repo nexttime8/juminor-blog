@@ -80,6 +80,9 @@ import createAlignPlugin from '@kangc/v-md-editor/lib/plugins/align';
 VueMarkdownEditor.use(createAlignPlugin());
 VMdPreview.use(createAlignPlugin());
 
+// 引入icons
+import '@/assets/icons' // icon
+
 new Vue({
   render: (h) => h(App),
   router, // 一定要在入口文件引入并注册！

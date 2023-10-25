@@ -24,16 +24,16 @@ export default {
           title: "主页",
           toRoute: "/home",
           isRoute: true,
-        },
+        } /* 
         {
           id: 2,
           title: "博客",
           toRoute: "/article",
           isRoute: true, // 搞半天因为这里写错了，幸好用@click对router-link和标签进行了测试
-        },
+        }, */,
         {
           id: 3,
-          title: "列表",
+          title: "文章",
           toRoute: "/list",
           isRoute: true, // 搞半天因为这里写错了，幸好用@click对router-link和标签进行了测试
         },

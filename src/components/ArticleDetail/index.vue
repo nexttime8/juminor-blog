@@ -17,9 +17,7 @@
             <p style="display: inline-block; margin-right: 20px">
               发布时间：{{ article.publishedAt }}
             </p>
-            <p style="display: inline-block">
-              分类：{{ getCategoryName(article.categoryId) }}
-            </p>
+            <p style="display: inline-block">分类：{{ article.categoryId }}</p>
           </div>
         </div>
         <v-md-preview
@@ -57,22 +55,21 @@
 // 查看文章列表详情
 import { getArticles } from "@/api/article/list";
 export default {
-  name: "InfoComp",
+  name: "ArticleDetail",
+  props: ["articleId"],
   data() {
     return {
       article: {},
-      articleId: null,
       titles: [],
       showSidebar: false, // 控制侧边栏的显示
       progressBarWidth: "0%", // 控制进度条的宽度
       notready: true,
-      categoriesList: [], // 分类列表
     };
   },
   methods: {
     // 加载文章内容
     getArticleDetail() {
-      getArticles(this.articleId)
+      getArticles(120)
         .then((response) => {
           this.article = response.data;
 
@@ -141,30 +138,13 @@ export default {
         this.showSidebar = true;
       }
     },
-    // 获取文章分类名【要有错误处理】
-    getCategoryName(categoryId) {
-      // console.log(this.categoriesList);
-      // 确保 categoriesList 已经加载
-      if (this.categoriesList && this.categoriesList.length > 0) {
-        // 使用 Array.find 或循环来查找匹配的 categoryId
-        const category = this.categoriesList.find(
-          (category) => category.id === categoryId
-        );
-
-        // 如果找到匹配的 category，则返回它的名称，否则返回一个默认值或者 null
-        return category ? category.name : "Category Not Found";
-      } else {
-        // 如果 categoriesList 还没有加载，可以返回一个默认值或者 null
-        return null;
-      }
-    },
   },
   // 在组件被销毁前移除事件监听
   beforeDestroy() {
     window.removeEventListener("scroll", this.scrollHandler);
   },
   created() {
-    this.articleId = this.$route.params.articleId;
+    const articleId = this.articleId || this.$route.params.articleId;
     this.getArticleDetail();
   },
   mounted() {

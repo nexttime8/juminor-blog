@@ -30,7 +30,12 @@ export default new VueRouter({
       path: "/article",
       name: "Article",
       component: Article,
-    },
+    },/* 
+    {
+      path: '/article/:articleId',
+      component: ArticleDetail,
+      props: true
+    }, */
     {
       path: "/list",
       name: "List",

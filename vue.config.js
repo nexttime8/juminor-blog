@@ -1,6 +1,12 @@
 const { defineConfig } = require("@vue/cli-service")
 const port = process.env.port || process.env.npm_config_port || 80 // 端口
 
+// svg-icon相关
+const path = require('path')
+function resolve(dir) {
+  return path.join(__dirname, './', dir)
+}
+
 module.exports = defineConfig({
   transpileDependencies: true,
   devServer: {
@@ -32,4 +38,22 @@ module.exports = defineConfig({
       },
     },
   },
+  // svg-sprite-loader相关配置
+  chainWebpack(config) {
+    config.module
+      .rule('svg')
+      .exclude.add(resolve('src/assets/icons'))
+      .end()
+    config.module
+      .rule('icons')
+      .test(/\.svg$/)
+      .include.add(resolve('src/assets/icons'))
+      .end()
+      .use('svg-sprite-loader')
+      .loader('svg-sprite-loader')
+      .options({
+        symbolId: 'icon-[name]'
+      })
+      .end()
+  }
 })

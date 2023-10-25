@@ -18,7 +18,7 @@
           <div class="card current--card" ref="currentCard">
             <div class="card__image">
               <img
-                src="../../assets/cards/photo-1497106636505-e4fd6e16d74c.jpg"
+                src="../../assets/cards/photo-1563722680966-fd2b17fc0ddf.jpg"
                 alt=""
                 ref="images"
               />
@@ -28,7 +28,7 @@
           <div class="card next--card">
             <div class="card__image">
               <img
-                src="../../assets/cards/photo-1563722680966-fd2b17fc0ddf.jpg"
+                src="../../assets/cards/photo-1497106636505-e4fd6e16d74c.jpg"
                 alt=""
                 ref="images"
               />
@@ -84,21 +84,21 @@
       <div class="app__bg">
         <div class="app__bg__image current--image">
           <img
-            src="https://source.unsplash.com/Z8dtTatMVMw"
+            src="../../assets/cards/photo-1563722680966-fd2b17fc0ddf.jpg"
             alt=""
             ref="images"
           />
         </div>
         <div class="app__bg__image next--image">
           <img
-            src="https://source.unsplash.com/9dmycbFE7mQ"
+            src="../../assets/cards/photo-1497106636505-e4fd6e16d74c.jpg"
             alt=""
             ref="images"
           />
         </div>
         <div class="app__bg__image previous--image">
           <img
-            src="https://source.unsplash.com/m7K4KzL5aQ8"
+            src="../../assets/cards/photo-1541961817716-44060761e345.jpg"
             alt=""
             ref="images"
           />

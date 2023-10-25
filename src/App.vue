@@ -42,6 +42,8 @@ body {
       height: 100%;
     }
   }
+  font-family: "Segoe UI", "Helvetica Neue", Lato, Roboto, "PingFang SC",
+    STZhongsong, "Lantinghei SC", sans-serif;
 }
 
 /* 卡片大小移动适配 */
