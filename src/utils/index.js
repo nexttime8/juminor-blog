@@ -1,7 +1,7 @@
 /**
  * 表格时间格式化
  */
-// 日期格式化
+// 时间格式化
 export function parseTime(time, pattern) {
   if (arguments.length === 0 || !time) {
     return null
@@ -42,6 +42,7 @@ export function parseTime(time, pattern) {
   return time_str
 }
 
+// 日期格式化
 export function formatDate(cellValue) {
   if (cellValue == null || cellValue == "") return "";
   var date = new Date(cellValue)
@@ -59,6 +60,7 @@ export function formatDate(cellValue) {
  * @param {string} option
  * @returns {string}
  */
+// 修改时间表达方式
 export function formatTime(time, option) {
   if (('' + time).length === 10) {
     time = parseInt(time) * 1000;
@@ -115,6 +117,7 @@ export function formatTime(time, option) {
  * @param {string} url
  * @returns {Object}
  */
+// 获取查询对象
 export function getQueryObject(url) {
   url = url == null ? window.location.href : url
   const search = url.substring(url.lastIndexOf('?') + 1)
@@ -439,5 +442,22 @@ export function camelCase(str) {
 
 export function isNumberStr(str) {
   return /^[+-]?(0|([1-9]\d*))(\.\d+)?$/g.test(str)
+}
+
+// 转换字符串，undefined,null等转化为""
+export function parseStrEmpty(str) {
+  if (!str || str == "undefined" || str == "null") {
+    return "";
+  }
+  return str;
+}
+
+// 滚动条复位
+export function resetProgressBar() {
+  // 将页面滚动位置恢复到顶部
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth', // 如果需要平滑滚动效果
+  });
 }
 

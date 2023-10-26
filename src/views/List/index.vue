@@ -92,6 +92,8 @@
 <script>
 // 获取文章列表请求
 import { getArticlesList } from "@/utils/article/articlesList";
+// 获取文章分类列表
+import { getCategoryList } from "@/utils/article/articlesList";
 // 格式化时间工具类
 import { formatTime } from "@/utils/index";
 // typed打字动画
@@ -110,8 +112,7 @@ export default {
       categoriesList: [],
       // 控制分类和推荐的显示与隐藏
       showElement: false,
-      // 控制一行展示的文章个数
-      lineCount: 4,
+      lineCount: 3,
     };
   },
   methods: {
@@ -133,13 +134,17 @@ export default {
     getArticlesList() {
       getArticlesList(this, "published");
     },
+    // 获取文章分类列表
+    getCategoryList(vm) {
+      getCategoryList(vm);
+    },
     // 给图片路径拼接base路径
     imageSrc(featuredImage) {
       // 这里可以拼接 baseURL 和 featuredImage
       const baseURL = process.env.VUE_APP_BASE_API;
       return `${baseURL}${featuredImage}`;
     },
-    // 导入的方法必须要实现？
+    // 导入的方法必须要实现？yes
     formatTime(time) {
       return formatTime(new Date(time).getTime());
     },
@@ -149,15 +154,22 @@ export default {
       // 确保 categoriesList 已经加载
       if (this.categoriesList && this.categoriesList.length > 0) {
         // 使用 Array.find 或循环来查找匹配的 categoryId
-        const category = this.categoriesList.find(
-          (category) => category.id === categoryId
-        );
-
+        const category = this.categoriesList.find((category) => {
+          // 要么写成(category)=>category.categoryId === categoryId;
+          // 要么写成下面那样，上面的要写return
+          /* console.log(
+            category,
+            category.categoryId,
+            category.categoryId === categoryId
+          ); */
+          return category.categoryId === categoryId;
+        });
+        // console.log(category);
         // 如果找到匹配的 category，则返回它的名称，否则返回一个默认值或者 null
-        return category ? category.name : "Category Not Found";
+        return category ? category.name : "未分类";
       } else {
         // 如果 categoriesList 还没有加载，可以返回一个默认值或者 null
-        return null;
+        return "未分类";
       }
     },
     // 跳转到阅读文章页面
@@ -169,28 +181,19 @@ export default {
       });
     },
     // 根据滚动位置判断是否激活
-    /* isCardActive(index) {
-      console.log(index, index * 100 <= window.scrollY);
-      return (index + 1) * 100 <= window.scrollY;
-    }, */
     isCardActive(index, count) {
-      /* // 计算一行中的第一个项目的索引
+      // 计算一行中的第一个项目的索引
       const rowStartIndex = Math.floor(index / count) * count;
       // 计算一行中的最后一个项目的索引
       const rowEndIndex = rowStartIndex + (count - 1);
       // console.log(rowStartIndex, rowEndIndex);
       // 检查滚动位置是否在一行中的范围内
-      const inRow = window.scrollY <= rowEndIndex * 100;
+      const inRow = window.scrollY <= rowEndIndex * 140; // 值可修改！
       // 以下会导致来回移动
       // const inRow =
       //   window.scrollY >= rowStartIndex * 150 &&
       //   window.scrollY <= rowEndIndex * 150;
-      return !inRow; */
-      // 计算滚动位置是否超过某个阈值
-      // 这里假设阈值是 100，你可以根据需要调整
-      const threshold = 100;
-      const itemTop = index * 100; // 假设每个项目的高度是 100px
-      return window.scrollY > itemTop - threshold;
+      return !inRow;
     },
     // 触发滚动事件时检测元素是否应该激活
     scrollTrigger() {
@@ -211,20 +214,24 @@ export default {
     calculatelineCount() {
       if (window.innerWidth >= 1200) {
         return 3;
-      } else {
+      } else if (window.innerWidth >= 992) {
         return 2;
+      } else {
+        return 1;
       }
     },
     // 处理窗口大小变化
     handleWindowResize() {
       // console.log("窗口大小发生变化", this.calculatelineCount());
-      this.itemsPerRow = this.calculatelineCount();
+      this.lineCount = this.calculatelineCount();
     },
   },
   mounted() {
     this.typeAnimation();
     // 发请求获取文章数据
     this.getArticlesList();
+    // 发请求获取文章分类列表
+    this.getCategoryList(this);
     // 动态打字的配置项
     const options = {
       strings: ["First sentence.", "Second sentence."],
@@ -268,7 +275,7 @@ export default {
   min-height: 96.2vh; // 网页端适配
   padding-bottom: 200px;
   .vh {
-    height: 90vh;
+    height: 80vh;
 
     .textEditor {
       display: block;
@@ -576,7 +583,7 @@ export default {
     .articleListContainer {
       .contentSearch {
         border-radius: 5px;
-        margin: 0 0 3.875rem 21.875rem !important;
+        margin: 0 0 3.875rem calc(37% - 119px) !important;
 
         position: relative;
         width: 450px;

@@ -6,9 +6,11 @@ import Home from "@/views/Home"
 import Sort from "@/views/Sort"
 import Create from "@/views/Create"
 import List from "@/views/List"
+import { resetProgressBar } from "../utils"
 Vue.use(VueRouter)
 
-export default new VueRouter({
+const router = new VueRouter({
+
   mode: "history",
   routes: [
     {
@@ -52,3 +54,13 @@ export default new VueRouter({
     },
   ],
 })
+router.beforeEach((to, from, next) => {
+  // 在路由切换前，可以在这里执行一些操作
+  // 例如：将进度条复位
+  // 这里假设你有一个名为 resetProgressBar 的方法用来复位进度条
+  resetProgressBar();
+  // 继续路由切换
+  next();
+});
+
+export default router;

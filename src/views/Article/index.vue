@@ -11,9 +11,7 @@
         <div class="info">
           <h1 style="font-weight: 900; font-size: 40px">{{ article.title }}</h1>
           <div>
-            <p style="display: inline-block; margin-right: 20px">
-              作者：{{ article.authorId }}
-            </p>
+            <!-- 查看详细文章时发布时间没必要改变表述方式 -->
             <p style="display: inline-block; margin-right: 20px">
               发布时间：{{ article.publishedAt }}
             </p>
@@ -44,7 +42,7 @@
         </div>
       </div>
       <!-- 电梯导航部分 -->
-      <div class="elevator-nav" v-if="titles.length">
+      <div class="elevator-nav" :class="{ active: showSidebar }">
         <div class="back-to-top" @click="scrollToTop">回到顶部</div>
       </div>
       <!-- 进度条部分 -->
@@ -56,8 +54,14 @@
 <script>
 // 查看文章列表详情
 import { getArticles } from "@/api/article/list";
+// 获取文章分类列表
+import { getCategoryList } from "@/utils/article/articlesList";
+// 格式化时间工具类
+import { formatTime } from "@/utils/index";
+// 回到顶部
+import { resetProgressBar } from "@/utils/index";
 export default {
-  name: "InfoComp",
+  name: "InfoComp", // 这个名称好像作用不大，在路由配置里面的name才有用
   data() {
     return {
       article: {},
@@ -88,6 +92,7 @@ export default {
           console.error("Error fetching article:", error);
         });
     },
+    // 目录跳转相关
     updateTitles() {
       const anchors =
         this.$refs.preview.$el.querySelectorAll("h1,h2,h3,h4,h5,h6");
@@ -122,10 +127,7 @@ export default {
     },
     // 回到顶部
     scrollToTop() {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
+      resetProgressBar();
     },
     // 监听滚动
     onScroll() {
@@ -147,27 +149,43 @@ export default {
       // 确保 categoriesList 已经加载
       if (this.categoriesList && this.categoriesList.length > 0) {
         // 使用 Array.find 或循环来查找匹配的 categoryId
-        const category = this.categoriesList.find(
-          (category) => category.id === categoryId
-        );
-
+        const category = this.categoriesList.find((category) => {
+          // 要么写成(category)=>category.categoryId === categoryId;
+          // 要么写成下面那样，上面的要写return
+          /* console.log(
+            category,
+            category.categoryId,
+            category.categoryId === categoryId
+          ); */
+          return category.categoryId === categoryId;
+        });
+        // console.log(category);
         // 如果找到匹配的 category，则返回它的名称，否则返回一个默认值或者 null
-        return category ? category.name : "Category Not Found";
+        return category ? category.name : "未分类";
       } else {
         // 如果 categoriesList 还没有加载，可以返回一个默认值或者 null
-        return null;
+        return "未分类";
       }
+    },
+    // 获取文章分类列表
+    getCategoryList(vm) {
+      getCategoryList(vm);
+    },
+    // 修改时间表述方式
+    formatTime(time) {
+      return formatTime(new Date(time).getTime());
     },
   },
   // 在组件被销毁前移除事件监听
   beforeDestroy() {
     window.removeEventListener("scroll", this.scrollHandler);
   },
-  created() {
-    this.articleId = this.$route.params.articleId;
-    this.getArticleDetail();
-  },
   mounted() {
+    this.articleId =
+      this.$route.params.articleId ||
+      new URLSearchParams(window.location.search).get("articleId"); // 后者保证刷新页面有文章id
+    this.getArticleDetail();
+    this.getCategoryList(this);
     this.scrollHandler = this.onScroll;
     window.addEventListener("scroll", this.scrollHandler);
   },
@@ -251,7 +269,7 @@ export default {
   --catalog-width-lg: 12.5rem;
   --catalog-width-md: 15.625rem;
   --catalog-width-sm: 12.5rem;
-  --catalog-width-xs: 6.25rem;
+  --catalog-width-xs: 4.5rem;
 
   padding: var(--spacing-lg);
   display: grid;
@@ -285,13 +303,16 @@ export default {
     }
   }
   .elevator-nav {
-    display: none;
+    opacity: 0;
     position: fixed;
     bottom: var(--spacing-sm); // 距离页面顶部的距离
     right: var(--spacing-sm); // 距离页面左侧的距离
     border-radius: 3% 3% 3% 3%/1% 1% 1% 1%;
     padding-left: 10px;
     color: #a08a8a;
+    &.active {
+      opacity: 1;
+    }
     .back-to-top {
       cursor: pointer;
       background-color: #969ea2;
@@ -303,6 +324,9 @@ export default {
         background-color: darken(#383f43, 10%);
       }
     }
+  }
+  &.active {
+    opacity: 1;
   }
 }
 
@@ -329,8 +353,12 @@ export default {
   .container {
     padding: var(--spacing-sm);
     font-size: 14px; // 减小字体大小
+    grid-template-columns: 100% 0;
     .article {
       margin-left: 0 !important; // 取消左边距
+    }
+    .catalog {
+      display: none !important;
     }
     .elevator-nav {
       bottom: var(--spacing-sm); // 减小底部距离
